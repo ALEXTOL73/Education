@@ -28,43 +28,9 @@ import os
 from abc import abstractmethod, abstractproperty
 
 
-class Data_Transfer(object):
-    @abstractmethod
-    def prepare(self):
-        pass
 
+import algorytm
 
-class Mfcc(Data_Transfer):
-    pass
-
-
-class Spectrum(Data_Transfer):
-    pass
-
-
-class Write_File:
-    pass
-
-class Algorytm:
-    pass
-
-
-class CNN(Algorytm):
-    pass
-
-class FCNN(Algorytm):
-    pass
-
-class RNN:
-    pass
-
-class Learning(alg,data):
-    self.alg = alg
-    self.data = data
-
-    def learn(self,data):
-        pass
-
-class Factory(Mfcc,RNN,FCNN):
+class Factory(CNN,RNN,FCNN):
     pass
 
