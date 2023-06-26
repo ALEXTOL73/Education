@@ -4,4 +4,5 @@ class Learning(alg,data):
     self.data = data
 
     def learn(self,data):
-        pass
+        X_train = []
+        Y_train = []

@@ -26,11 +26,30 @@ import numpy as np
 import os
 
 from abc import abstractmethod, abstractproperty
+import cnn,rnn,fcnn
+from cnn import CNN
+from fcnn import FCNN
+from rnn import RNN
 
-
+from dotenv.main import load_dotenv
+import os
 
 import algorytm
 
-class Factory(CNN,RNN,FCNN):
-    pass
+load_dotenv()
+SR = os.environ['SR']
+DURATION = os.environ['DURATION']
+MFCC_NUM = os.environ['MFCC_NUM']
 
+
+
+class AlgotytmFactory():
+    def CreateAlgotytm(self, name):
+        if name == FCNN:
+            return FCNN()
+        elif name == CNN:
+            return CNN()
+        elif name == RNN:
+            return RNN()
+        else:
+            return None
