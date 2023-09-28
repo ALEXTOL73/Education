@@ -18,6 +18,7 @@ from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
 from sklearn.preprocessing import StandardScaler
+
 # Unused libs:
 # import tensorflow as tf
 # import math

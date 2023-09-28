@@ -1,5 +1,5 @@
 #Графики обучения
-from matplotlib import plt
+from matplotlib import pyplot as plt
 
 def plot_accuracy_and_loss(history):
     # Retrieve a list of list results on training and test data

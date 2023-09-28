@@ -39,10 +39,6 @@ from tensorflow.python.client import device_lib
 # from sklearn import metrics
 
 
-
-from datetime import datetime
-
-
 print(device_lib.list_local_devices())
 
 
