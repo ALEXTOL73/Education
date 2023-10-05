@@ -1,55 +1,34 @@
-from __future__ import division
-import warnings
-
-warnings.filterwarnings('ignore')
-import tensorflow as tf
-import math
-
-# обработка аудио
-
-import librosa
-import librosa.display
-
-# работа с масивамми
-import numpy as np
-from matplotlib import pyplot as plt
-
-# работа с данными
 import os
-import pandas as pd
-from scipy.fftpack import dct
-
-from PIL import Image, ImageDraw, ImageFont
-import sys
-
-import numpy as np
-import os
-
-from abc import abstractmethod, abstractproperty
-import cnn,rnn,fcnn
-from cnn import CNN
-from fcnn import FCNN
-from rnn import RNN
-
+import runpy
 from dotenv.main import load_dotenv
-import os
 
-import algorytm
 
 load_dotenv()
-SR = os.environ['SR']
-DURATION = os.environ['DURATION']
-MFCC_NUM = os.environ['MFCC_NUM']
+name = os.environ['NAME']
+sr = int(os.environ['SR'])
+duration = float(os.environ['DURATION'])
+mono = False
+mfccs_num = int(os.environ['MFCC_NUM'])
+hop_length = int(os.environ['HOP_LENGTH'])
+path = os.environ['PATH_SIG']
+path_w = os.environ['PATH_WEIGHTS']
+
+paths = []
+for ch in os.listdir(path):
+    paths.append(path + '/' + ch + '/')
+path_ws = path_w + '/' + name + '/'
+
+num_epochs = int(os.environ['NUM_EPOCHS'])
+num_batch_size = int(os.environ['NUM_BATCH_SIZE'])
+num_channels = int(os.environ['NUM_CHANNELS'])
+
+def main():
+    try:
+        runpy.run_module(mod_name=name + '_all')
+        return 0
+    except:
+        return 1
 
 
-
-class AlgotytmFactory():
-    def CreateAlgotytm(self, name):
-        if name == FCNN:
-            return FCNN()
-        elif name == CNN:
-            return CNN()
-        elif name == RNN:
-            return RNN()
-        else:
-            return None
+if __name__ == "__main__":
+    exit(main())

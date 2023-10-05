@@ -18,48 +18,21 @@ from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
 from sklearn.preprocessing import StandardScaler
-
-# Unused libs:
-# import tensorflow as tf
-# import math
-# import os
-# import librosa
-# from matplotlib import pyplot as plt
-# from scipy.fftpack import dct
-# from PIL import Image, ImageDraw, ImageFont
-# import sys
-# import seaborn as sns
-# from keras.layers import BatchNormalization
-# from keras.layers import Convolution2D, MaxPooling2D
-# from keras.utils import np_utils
-# from sklearn import metrics
-# from sklearn.manifold import TSNE
-# from MulticoreTSNE import MulticoreTSNE as TSNE
-# from sklearn.decomposition import PCA
-# from keras.layers import Activation, Flatten,LSTM,Lambda,Bidirectional
+from main import *
 
 
 print(device_lib.list_local_devices())
 
-path_ch0 = 'd:/Project/full dataset/audio/ch0/'
-path_ch1 = 'd:/Project/full dataset/audio/ch1/'
-path_ch2 = 'd:/Project/full dataset/audio/ch2/'
-path_ch3 = 'd:/Project/full dataset/audio/ch3/'
+path_ch0,path_ch1,path_ch2,path_ch3 = paths
 
-df_fc_ch0,columns_fc,df_cnn_ch0,columns_cnn =  features_creation(path_ch0,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch1,columns_fc,df_cnn_ch1,columns_cnn =  features_creation(path_ch1,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch2,columns_fc,df_cnn_ch2,columns_cnn =  features_creation(path_ch2,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch3,columns_fc,df_cnn_ch3,columns_cnn =  features_creation(path_ch3,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
+df_fc_ch0,columns_fc,_,_ =  features_creation(path_ch0, sr, duration, mono, mfccs_num, hop_length)
+df_fc_ch1,_,_,_ =  features_creation(path_ch1, sr, duration, mono, mfccs_num, hop_length)
+df_fc_ch2,_,_,_ =  features_creation(path_ch2, sr, duration, mono, mfccs_num, hop_length)
+df_fc_ch3,_,_,_ =  features_creation(path_ch3, sr, duration, mono, mfccs_num, hop_length)
 
-print('\n size of features for FNN')
+print('size of features for FCNN :')
 print(np.shape(df_fc_ch0))
-print(np.shape(df_fc_ch1))
-print(np.shape(df_fc_ch2))
-print(np.shape(df_fc_ch3))
+
 
 
 # Convert features into a Panda dataframe for fully connected NN
@@ -67,8 +40,6 @@ ch0_fc_df = pd.DataFrame(columns = columns_fc)
 ch1_fc_df = pd.DataFrame(columns = columns_fc)
 ch2_fc_df = pd.DataFrame(columns = columns_fc)
 ch3_fc_df = pd.DataFrame(columns = columns_fc)
-# num_labels = np.unique(ch1_fc_df['class_label']).shape[0]
-# print(num_labels)
 
 for i in range(np.shape(df_fc_ch0)[0]):
     ch0_fc_df.loc[i] = df_fc_ch0[i]
@@ -135,7 +106,7 @@ xTrain_fc_ch2, xTest_fc_ch2, yTrain_fc_ch2,yTest_fc_ch2 = train_test_split(featu
                                                 y_pca_cat_ch2,test_size = 0.2, random_state = 0)
 xTrain_fc_ch3, xTest_fc_ch3, yTrain_fc_ch3,yTest_fc_ch3 = train_test_split(features_fc_ch3_scaled,
                                                 y_pca_cat_ch3,test_size = 0.2, random_state = 0)
-
+# для передачи в Ansamble.py
 Xtr_fc = [xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3]
 Xts_fc = [xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3]
 Ytr_fc = [yTrain_fc_ch0,yTrain_fc_ch1,yTrain_fc_ch2,yTrain_fc_ch3]
@@ -144,7 +115,7 @@ Yts_fc = [yTest_fc_ch0,yTest_fc_ch1,yTest_fc_ch2,yTest_fc_ch3]
 #Construct FCNN
 num_labels = np.unique(ch1_fc_df['class_label']).shape[0]
 print(num_labels)
-#filter_size = 2
+
 
 # Construct model
 model_fc_branch = Sequential()
@@ -176,25 +147,23 @@ model_fc_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
                         optimizer= keras.optimizers.RMSprop(learning_rate=0.001))
 model_fc_branch.summary()
 
-num_epochs = 20
-num_batch_size = 128
 
-checkpointer_fc_ch0 = ModelCheckpoint(filepath='d:/Project/Weights/FCNN/weights_fc_ch0.hdf5',
+checkpointer_fc_ch0 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch0.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_fc_ch1 = ModelCheckpoint(filepath='d:/Project/Weights/FCNN/weights_fc_ch1.hdf5',
+checkpointer_fc_ch1 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch1.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_fc_ch2 = ModelCheckpoint(filepath='d:/Project/Weights/FCNN/weights_fc_ch2.hdf5',
+checkpointer_fc_ch2 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch2.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_fc_ch3 = ModelCheckpoint(filepath='d:/Project/Weights/FCNN/weights_fc_ch3.hdf5',
+checkpointer_fc_ch3 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch3.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
@@ -225,10 +194,12 @@ yTest = [yTest_fc_ch0, yTest_fc_ch1, yTest_fc_ch2, yTest_fc_ch3]
 
 for i in range(4):
     print(f'channel{i}')
-    model_fc_branch.load_weights(f'd:/Project/Weights/FCNN/weights_fc_ch{i}.hdf5')
+    model_fc_branch.load_weights(path_ws + f'weights_fc_ch{i}.hdf5')
     score = model_fc_branch.evaluate(xTrain[i], yTrain[i], verbose=0)
     print("Training Accuracy: ", score[1])
 
     score = model_fc_branch.evaluate(xTest[i], yTest[i], verbose=0)
     print("Testing Accuracy: ", score[1])
+
+exit(0)
 

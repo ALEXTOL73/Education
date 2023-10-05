@@ -7,76 +7,29 @@ import pandas as pd
 
 from Preprocess import features_creation,make_np_array
 from History_Plots import plot_accuracy_and_loss
-
 from keras import regularizers
 from keras import layers
 from keras import Model
-from sklearn.preprocessing import LabelEncoder
+from keras.callbacks import ModelCheckpoint
 from keras.utils import to_categorical
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
-from keras.callbacks import ModelCheckpoint
-
-# Unused libs:
-# from keras.callbacks import ModelCheckpoint
-# import librosa
-# from matplotlib import pyplot as plt
-# import os
-# import math
-# from scipy.fftpack import dct
-# from PIL import Image, ImageDraw, ImageFont
-# import sys
-# import seaborn as sns
-# from sklearn.preprocessing import StandardScaler
-# from sklearn.manifold import TSNE
-# from MulticoreTSNE import MulticoreTSNE as TSNE
-# from sklearn.decomposition import PCA
-# from keras.models import Sequential
-# from keras.layers import Dense, Dropout, Activation, Flatten,LSTM,Lambda,Bidirectional
-# from keras.layers import BatchNormalization
-# from keras.layers import Convolution2D, MaxPooling2D
-# from keras.optimizers import Adam
-# from keras.utils import np_utils
-# from sklearn import metrics
-# from datetime import datetime
-
+from main import *
 
 print(device_lib.list_local_devices())
 
-
-# filename = 'd:/Project/full dataset/audio/ch0/0/5.wav'
-# sr = 96000
-# duration = 0.3
-# hop_length = 512
-# num_fft = 512
-#
-# signal, sample_rate = librosa.load(filename, sr = sr,duration=duration,mono=False)
-# mfccs = get_mfccs(signal,sample_rate, NFFT = 1028, nfilt = 32, num_ceps = 16,frame_size = 0.025, frame_stride = 0.01 )
-# mfccs = mfccs.T
-# print(np.shape(mfccs))
-# mfccs_mean_test = np.mean(mfccs,axis=0)
-# np.shape(mfccs_mean_test)
-
-path_ch0 = 'd:/Project/full dataset/audio/ch0/'
-path_ch1 = 'd:/Project/full dataset/audio/ch1/'
-path_ch2 = 'd:/Project/full dataset/audio/ch2/'
-path_ch3 = 'd:/Project/full dataset/audio/ch3/'
+path_ch0,path_ch1,path_ch2,path_ch3 = paths
 
 
-df_fc_ch0,columns_fc,df_cnn_ch0,columns_cnn =  features_creation(path_ch0,sr = None, duration = 0.3,
-                                               mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch1,columns_fc,df_cnn_ch1,columns_cnn =  features_creation(path_ch1,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch2,columns_fc,df_cnn_ch2,columns_cnn =  features_creation(path_ch2,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch3,columns_fc,df_cnn_ch3,columns_cnn =  features_creation(path_ch3,sr = None, duration = 0.3,
-                                                mono = False,mfccs_num = 128,hop_length = 512)
+_,_,df_cnn_ch0,columns_cnn =  features_creation(path_ch0, sr, duration, mono, mfccs_num, hop_length)
+_,_,df_cnn_ch1,_ =  features_creation(path_ch1, sr, duration, mono, mfccs_num, hop_length)
+_,_,df_cnn_ch2,_ =  features_creation(path_ch2, sr, duration, mono, mfccs_num, hop_length)
+_,_,df_cnn_ch3,_ =  features_creation(path_ch3, sr, duration, mono, mfccs_num, hop_length)
 
 print('\n size of features for CNN')
 print(np.shape(df_cnn_ch0))
-print(np.shape(df_cnn_ch1))
-print(np.shape(df_cnn_ch2))
-print(np.shape(df_cnn_ch3))
+
 
 # Convert features into a Panda dataframe for CNN
 
@@ -136,6 +89,7 @@ xTest_cnn_ch1_cut = xTest_cnn_ch1[:,0:max_filter,:]
 xTest_cnn_ch2_cut = xTest_cnn_ch2[:,0:max_filter,:]
 xTest_cnn_ch3_cut = xTest_cnn_ch3[:,0:max_filter,:]
 
+# для передачи в Ansamble.py
 Xtr_cnn = [xTrain_cnn_ch0_cut,xTrain_cnn_ch1_cut,xTrain_cnn_ch2_cut,xTrain_cnn_ch3_cut]
 Xts_cnn = [xTest_cnn_ch0_cut,xTest_cnn_ch1_cut,xTest_cnn_ch2_cut,xTest_cnn_ch3_cut]
 Ytr_cnn = [yTrain_cnn_ch0,yTrain_cnn_ch1,yTrain_cnn_ch2,yTrain_cnn_ch3]
@@ -181,106 +135,107 @@ model_cnn_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
 
 num_rows = np.shape(xTest_cnn_ch0_cut[0])[0]
 num_columns = np.shape(xTest_cnn_ch0_cut[0])[1]
-num_channels = 1
 
 
-num_epochs = 30
-num_batch_size = 64
 
-checkpointer_cnn_ch0 = ModelCheckpoint(filepath='d:/Project/Weights/CNN/weights_cnn_ch0.hdf5',
+checkpointer_cnn_ch0 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch0.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_cnn_ch1 = ModelCheckpoint(filepath='d:/Project/Weights/CNN/weights_cnn_ch1.hdf5',
+checkpointer_cnn_ch1 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch1.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_cnn_ch2 = ModelCheckpoint(filepath='d:/Project/Weights/CNN/weights_cnn_ch2.hdf5',
+checkpointer_cnn_ch2 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch2.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-checkpointer_cnn_ch3 = ModelCheckpoint(filepath='d:/Project/Weights/CNN/weights_cnn_ch3.hdf5',
+checkpointer_cnn_ch3 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch3.hdf5',
                                monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True)
 
-print(np.shape(xTrain_cnn_ch0_cut))
-xTrain_cnn_ch0_reduced =  xTrain_cnn_ch0_cut.copy()
-# xTrain_cnn_ch0_reduced [:,:5,:,0] = 0
-# xTrain_cnn_ch0_reduced [:,110:,:,0] = 0
+# print(np.shape(xTrain_cnn_ch0_cut))
+#
+# xTrain_cnn_ch0_reduced =  xTrain_cnn_ch0_cut.copy()
+# # xTrain_cnn_ch0_reduced [:,:5,:,0] = 0
+# # xTrain_cnn_ch0_reduced [:,110:,:,0] = 0
 history_cnn_ch0 = model_cnn_branch.fit(xTrain_cnn_ch0_cut, yTrain_cnn_ch0, batch_size=num_batch_size,
- callbacks=[checkpointer_cnn_ch0], epochs=num_epochs, validation_data=(xTest_cnn_ch0_cut, yTest_cnn_ch0),  verbose=1)
-answer = yTrain_cnn_ch0
-# data = xTrain_cnn_ch0_cut
-data = xTrain_cnn_ch0_reduced
-
-print(np.shape(xTrain_cnn_ch1_cut))
-xTrain_cnn_ch1_reduced =  xTrain_cnn_ch1_cut.copy()
-# xTrain_cnn_ch1_reduced [:,:5,:,0] = 0
-# xTrain_cnn_ch1_reduced [:,110:,:,0] = 0
+callbacks=[checkpointer_cnn_ch0], epochs=num_epochs, validation_data=(xTest_cnn_ch0_cut, yTest_cnn_ch0),  verbose=1)
+# answer = yTrain_cnn_ch0
+# # data = xTrain_cnn_ch0_cut
+# data = xTrain_cnn_ch0_reduced
+#
+# print(np.shape(xTrain_cnn_ch1_cut))
+# xTrain_cnn_ch1_reduced =  xTrain_cnn_ch1_cut.copy()
+# # xTrain_cnn_ch1_reduced [:,:5,:,0] = 0
+# # xTrain_cnn_ch1_reduced [:,110:,:,0] = 0
 history_cnn_ch1 = model_cnn_branch.fit(xTrain_cnn_ch1_cut, yTrain_cnn_ch1, batch_size=num_batch_size,
- callbacks=[checkpointer_cnn_ch1], epochs=num_epochs, validation_data=(xTest_cnn_ch1_cut, yTest_cnn_ch1),  verbose=1)
-answer = yTrain_cnn_ch1
-# data = xTrain_cnn_ch1_cut
-data = xTrain_cnn_ch1_reduced
-
-print(np.shape(xTrain_cnn_ch2_cut))
-xTrain_cnn_ch2_reduced =  xTrain_cnn_ch2_cut.copy()
-# xTrain_cnn_ch2_reduced [:,:5,:,0] = 0
-# xTrain_cnn_ch2_reduced [:,110:,:,0] = 0
+callbacks=[checkpointer_cnn_ch1], epochs=num_epochs, validation_data=(xTest_cnn_ch1_cut, yTest_cnn_ch1),  verbose=1)
+#
+# answer = yTrain_cnn_ch1
+# # data = xTrain_cnn_ch1_cut
+# data = xTrain_cnn_ch1_reduced
+#
+# print(np.shape(xTrain_cnn_ch2_cut))
+#
+# xTrain_cnn_ch2_reduced =  xTrain_cnn_ch2_cut.copy()
+# # xTrain_cnn_ch2_reduced [:,:5,:,0] = 0
+# # xTrain_cnn_ch2_reduced [:,110:,:,0] = 0
 history_cnn_ch2 = model_cnn_branch.fit(xTrain_cnn_ch2_cut, yTrain_cnn_ch2, batch_size=num_batch_size,
- callbacks=[checkpointer_cnn_ch2], epochs=num_epochs, validation_data=(xTest_cnn_ch2_cut, yTest_cnn_ch2),  verbose=1)
-answer = yTrain_cnn_ch2
-# data = xTrain_cnn_ch2_cut
-data = xTrain_cnn_ch2_reduced
-
-print(np.shape(xTrain_cnn_ch3_cut))
-xTrain_cnn_ch3_reduced =  xTrain_cnn_ch3_cut.copy()
-# xTrain_cnn_ch3_reduced [:,:5,:,0] = 0
-# xTrain_cnn_ch3_reduced [:,110:,:,0] = 0
+callbacks=[checkpointer_cnn_ch2], epochs=num_epochs, validation_data=(xTest_cnn_ch2_cut, yTest_cnn_ch2),  verbose=1)
+# answer = yTrain_cnn_ch2
+# # data = xTrain_cnn_ch2_cut
+# data = xTrain_cnn_ch2_reduced
+#
+# print(np.shape(xTrain_cnn_ch3_cut))
+#
+# xTrain_cnn_ch3_reduced =  xTrain_cnn_ch3_cut.copy()
+# # xTrain_cnn_ch3_reduced [:,:5,:,0] = 0
+# # xTrain_cnn_ch3_reduced [:,110:,:,0] = 0
 history_cnn_ch3 = model_cnn_branch.fit(xTrain_cnn_ch3_cut, yTrain_cnn_ch3, batch_size=num_batch_size,
- callbacks=[checkpointer_cnn_ch3], epochs=num_epochs, validation_data=(xTest_cnn_ch3_cut, yTest_cnn_ch3),  verbose=1)
-answer = yTrain_cnn_ch3
-# data = xTrain_cnn_ch3_cut
-data = xTrain_cnn_ch3_reduced
-
-
-def attention(p):
-    expected_output = tf.cast(answer[p], tf.float32)
-    i = np.argmax(expected_output)
-
-
-    with tf.GradientTape() as tape:
-        # cast image to float
-        inputs = tf.cast(data[p:p + 1], dtype=tf.float32)
-        # watch the input pixels
-        tape.watch(inputs)
-
-        # generate the predictions
-        predictions = model_cnn_branch(inputs)
-
-        # get the loss
-        loss = tf.keras.losses.categorical_crossentropy(
-            expected_output, predictions[0]
-        )
-
-    gradients = tape.gradient(loss, inputs)
-    # reduce the RGB image to grayscale
-    grayscale_tensor = tf.reduce_sum(tf.abs(gradients), axis=-1)
-
-    # normalize the pixel values to be in the range [0, 255].
-    # the max value in the grayscale tensor will be pushed to 255.
-    # the min value will be pushed to 0.
-    normalized_tensor = tf.cast(
-        255
-        * (grayscale_tensor - tf.reduce_min(grayscale_tensor))
-        / (tf.reduce_max(grayscale_tensor) - tf.reduce_min(grayscale_tensor)),
-        tf.uint8,
-    )
-    return normalized_tensor, grayscale_tensor
+callbacks=[checkpointer_cnn_ch3], epochs=num_epochs, validation_data=(xTest_cnn_ch3_cut, yTest_cnn_ch3),  verbose=1)
+# answer = yTrain_cnn_ch3
+# # data = xTrain_cnn_ch3_cut
+# data = xTrain_cnn_ch3_reduced
+#
+#
+# def attention(p):
+#     expected_output = tf.cast(answer[p], tf.float32)
+#     i = np.argmax(expected_output)
+#
+#
+#     with tf.GradientTape() as tape:
+#         # cast image to float
+#         inputs = tf.cast(data[p:p + 1], dtype=tf.float32)
+#         # watch the input pixels
+#         tape.watch(inputs)
+#
+#         #generate the predictions
+#         predictions = model_cnn_branch(inputs)
+#
+#         # get the loss
+#         loss = tf.keras.losses.categorical_crossentropy(
+#             expected_output, predictions[0]
+#         )
+#
+#     gradients = tape.gradient(loss, inputs)
+#     # reduce the RGB image to grayscale
+#     grayscale_tensor = tf.reduce_sum(tf.abs(gradients), axis=-1)
+#
+#     # normalize the pixel values to be in the range [0, 255].
+#     # the max value in the grayscale tensor will be pushed to 255.
+#     # the min value will be pushed to 0.
+#     normalized_tensor = tf.cast(
+#         255
+#         * (grayscale_tensor - tf.reduce_min(grayscale_tensor))
+#         / (tf.reduce_max(grayscale_tensor) - tf.reduce_min(grayscale_tensor)),
+#         tf.uint8,
+#     )
+#     return normalized_tensor, grayscale_tensor
 
 # Evaluating the model on the training and testing set
 
@@ -293,7 +248,7 @@ yTest = [yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3]
 
 for i in range(4):
     print(f'channel{i}')
-    model_cnn_branch.load_weights(f'd:/Project/Weights/CNN/weights_cnn_ch{i}.hdf5')
+    model_cnn_branch.load_weights(path_ws + f'weights_cnn_ch{i}.hdf5')
     score = model_cnn_branch.evaluate(xTrain[i], yTrain[i],verbose=0)
     print("Training Accuracy: ", score[1])
 
@@ -302,3 +257,5 @@ for i in range(4):
 
 history = [history_cnn_ch0,history_cnn_ch1,history_cnn_ch2,history_cnn_ch3]
 plot_accuracy_and_loss(history)
+
+exit(0)
