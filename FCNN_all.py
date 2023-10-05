@@ -19,24 +19,6 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
 from sklearn.preprocessing import StandardScaler
 
-# Unused libs:
-# import tensorflow as tf
-# import math
-# import os
-# import librosa
-# from matplotlib import pyplot as plt
-# from scipy.fftpack import dct
-# from PIL import Image, ImageDraw, ImageFont
-# import sys
-# import seaborn as sns
-# from keras.layers import BatchNormalization
-# from keras.layers import Convolution2D, MaxPooling2D
-# from keras.utils import np_utils
-# from sklearn import metrics
-# from sklearn.manifold import TSNE
-# from MulticoreTSNE import MulticoreTSNE as TSNE
-# from sklearn.decomposition import PCA
-# from keras.layers import Activation, Flatten,LSTM,Lambda,Bidirectional
 
 
 print(device_lib.list_local_devices())
@@ -46,13 +28,13 @@ path_ch1 = 'd:/Project/full dataset/audio/ch1/'
 path_ch2 = 'd:/Project/full dataset/audio/ch2/'
 path_ch3 = 'd:/Project/full dataset/audio/ch3/'
 
-df_fc_ch0,columns_fc,df_cnn_ch0,columns_cnn =  features_creation(path_ch0,sr = None, duration = 0.3,
+df_fc_ch0,columns_fc,_,_ =  features_creation(path_ch0,sr = None, duration = 0.3,
                                                 mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch1,columns_fc,df_cnn_ch1,columns_cnn =  features_creation(path_ch1,sr = None, duration = 0.3,
+df_fc_ch1,_,_,_ =  features_creation(path_ch1,sr = None, duration = 0.3,
                                                 mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch2,columns_fc,df_cnn_ch2,columns_cnn =  features_creation(path_ch2,sr = None, duration = 0.3,
+df_fc_ch2,_,_,_ =  features_creation(path_ch2,sr = None, duration = 0.3,
                                                 mono = False,mfccs_num = 128,hop_length = 512)
-df_fc_ch3,columns_fc,df_cnn_ch3,columns_cnn =  features_creation(path_ch3,sr = None, duration = 0.3,
+df_fc_ch3,_,_,_ =  features_creation(path_ch3,sr = None, duration = 0.3,
                                                 mono = False,mfccs_num = 128,hop_length = 512)
 
 print('\n size of features for FNN')
@@ -135,7 +117,7 @@ xTrain_fc_ch2, xTest_fc_ch2, yTrain_fc_ch2,yTest_fc_ch2 = train_test_split(featu
                                                 y_pca_cat_ch2,test_size = 0.2, random_state = 0)
 xTrain_fc_ch3, xTest_fc_ch3, yTrain_fc_ch3,yTest_fc_ch3 = train_test_split(features_fc_ch3_scaled,
                                                 y_pca_cat_ch3,test_size = 0.2, random_state = 0)
-
+# для передачи в Ansamble.py
 Xtr_fc = [xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3]
 Xts_fc = [xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3]
 Ytr_fc = [yTrain_fc_ch0,yTrain_fc_ch1,yTrain_fc_ch2,yTrain_fc_ch3]
@@ -144,7 +126,7 @@ Yts_fc = [yTest_fc_ch0,yTest_fc_ch1,yTest_fc_ch2,yTest_fc_ch3]
 #Construct FCNN
 num_labels = np.unique(ch1_fc_df['class_label']).shape[0]
 print(num_labels)
-#filter_size = 2
+
 
 # Construct model
 model_fc_branch = Sequential()

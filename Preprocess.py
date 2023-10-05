@@ -135,3 +135,4 @@ def make_np_array(features_cnn):
     for item in features_cnn.values:
         np_array.append(item)
     return np.array(np_array)
+

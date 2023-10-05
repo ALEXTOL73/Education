@@ -11,8 +11,7 @@ from keras.callbacks import ModelCheckpoint
 from FCNN_all import Xtr_fc,Xts_fc,Ytr_fc,Yts_fc,num_labels,plot_accuracy_and_loss
 from CNN_all import Xtr_cnn,Xts_cnn,Ytr_cnn,Yts_cnn
 
-# Unused libs:
-# from matplotlib import pyplot as plt
+
 
 xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3 = Xtr_fc[0],Xtr_fc[1],Xtr_fc[2],Xtr_fc[3]
 xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3 = Xts_fc[0],Xts_fc[1],Xts_fc[2],Xts_fc[3]
