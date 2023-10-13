@@ -2,16 +2,33 @@ from keras import Input
 from keras import Model
 from keras.layers import concatenate
 import numpy as np
+import pickle
+from main import *
 
 import keras
 from keras.layers import Dense, Dropout,Flatten
 from keras import regularizers
 from keras import layers
 from keras.callbacks import ModelCheckpoint
-from FCNN_all import Xtr_fc,Xts_fc,Ytr_fc,Yts_fc,num_labels,plot_accuracy_and_loss
-from CNN_all import Xtr_cnn,Xts_cnn,Ytr_cnn,Yts_cnn
+from History_Plots import plot_accuracy_and_loss
 
+# Читать из файлов xTrain,xTest,yTrain,yTest,num_labels(если пустые, то запуск FCNN,CNN)
+datafile_rf = open(path_ws+'/'+'params'+'_'+'FCNN'+'.dat',"rb")
+read_data_f= pickle.load(datafile_rf)
+num_labels = read_data_f.num_labels
+Xtr_fc = read_data_f.xTrain
+Xts_fc = read_data_f.xTest
+Ytr_fc = read_data_f.yTrain
+Yts_fc = read_data_f.yTest
+datafile_rf.close()
 
+datafile_rc = open(path_ws+'/'+'params'+'_'+'CNN'+'.dat',"rb")
+read_data_c= pickle.load(datafile_rf)
+Xtr_cnn = read_data_c.xTrain
+Xts_cnn = read_data_c.xTest
+Ytr_cnn = read_data_c.yTrain
+Yts_cnn = read_data_c.yTest
+datafile_rc.close()
 
 xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3 = Xtr_fc[0],Xtr_fc[1],Xtr_fc[2],Xtr_fc[3]
 xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3 = Xts_fc[0],Xts_fc[1],Xts_fc[2],Xts_fc[3]

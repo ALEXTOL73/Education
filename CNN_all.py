@@ -4,6 +4,7 @@ warnings.filterwarnings('ignore')
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+import pickle
 
 from Preprocess import features_creation,make_np_array
 from History_Plots import plot_accuracy_and_loss
@@ -89,11 +90,7 @@ xTest_cnn_ch1_cut = xTest_cnn_ch1[:,0:max_filter,:]
 xTest_cnn_ch2_cut = xTest_cnn_ch2[:,0:max_filter,:]
 xTest_cnn_ch3_cut = xTest_cnn_ch3[:,0:max_filter,:]
 
-# для передачи в Ansamble.py
-Xtr_cnn = [xTrain_cnn_ch0_cut,xTrain_cnn_ch1_cut,xTrain_cnn_ch2_cut,xTrain_cnn_ch3_cut]
-Xts_cnn = [xTest_cnn_ch0_cut,xTest_cnn_ch1_cut,xTest_cnn_ch2_cut,xTest_cnn_ch3_cut]
-Ytr_cnn = [yTrain_cnn_ch0,yTrain_cnn_ch1,yTrain_cnn_ch2,yTrain_cnn_ch3]
-Yts_cnn = [yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3]
+
 
 num_rows = np.shape(xTest_cnn_ch0_cut[0])[0]
 num_columns = np.shape(xTest_cnn_ch0_cut[0])[1]
@@ -122,8 +119,8 @@ x = layers.Dropout(0.22)(x)
 
 x = layers.Flatten()(x)
 
-
-num_labels = np.unique(ch1_cnn_df['class_label']).shape[0]
+class_labels_cnn = np.unique(ch1_cnn_df['class_label'])
+num_labels = class_labels_cnn.shape[0]
 print("Num_labels = ",num_labels)
 
 CNN_output = layers.Dense(num_labels, activation='softmax')(x)
@@ -241,7 +238,6 @@ callbacks=[checkpointer_cnn_ch3], epochs=num_epochs, validation_data=(xTest_cnn_
 
 xTrain = [xTrain_cnn_ch0_cut,xTrain_cnn_ch1_cut,xTrain_cnn_ch2_cut,xTrain_cnn_ch3_cut]
 yTrain = [yTrain_cnn_ch0,yTrain_cnn_ch1,yTrain_cnn_ch2,yTrain_cnn_ch3]
-
 xTest = [xTest_cnn_ch0_cut,xTest_cnn_ch1_cut,xTest_cnn_ch2_cut,xTest_cnn_ch3_cut]
 yTest = [yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3]
 
@@ -257,5 +253,12 @@ for i in range(4):
 
 history = [history_cnn_ch0,history_cnn_ch1,history_cnn_ch2,history_cnn_ch3]
 plot_accuracy_and_loss(history)
+
+# Записать xTrain, YTrain,num_labels,model_branch
+params = [num_labels,list(class_labels_cnn),model_cnn_branch,xTrain,xTest,yTrain,yTest]
+write_data = params
+datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
+pickle.dump(write_data,datafile)
+datafile.close()
 
 exit(0)

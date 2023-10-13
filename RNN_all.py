@@ -4,6 +4,7 @@ warnings.filterwarnings('ignore')
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+import pickle
 
 from Preprocess import features_creation,make_np_array
 from History_Plots import plot_accuracy_and_loss
@@ -89,9 +90,10 @@ xTest_rnn_ch1_cut = xTest_rnn_ch1[:,0:max_filter,:]
 xTest_rnn_ch2_cut = xTest_rnn_ch2[:,0:max_filter,:]
 xTest_rnn_ch3_cut = xTest_rnn_ch3[:,0:max_filter,:]
 
-
-num_labels = np.unique(ch1_rnn_df['class_label']).shape[0]
+class_labels_rnn = np.unique(ch1_rnn_df['class_label'])
+num_labels = class_labels_rnn.shape[0]
 print("Num_labels = ",num_labels)
+
 num_rows = np.shape(xTest_rnn_ch0_cut[0])[0]
 num_columns = np.shape(xTest_rnn_ch0_cut[0])[1]
 
@@ -278,7 +280,6 @@ history_rnn_ch3 = model_rnn_branch.fit(xTrain_rnn_ch3_cut, yTrain_rnn_ch3, batch
 
 xTrain = [xTrain_rnn_ch0_cut,xTrain_rnn_ch1_cut,xTrain_rnn_ch2_cut,xTrain_rnn_ch3_cut]
 yTrain = [yTrain_rnn_ch0,yTrain_rnn_ch1,yTrain_rnn_ch2,yTrain_rnn_ch3]
-
 xTest = [xTest_rnn_ch0_cut,xTest_rnn_ch1_cut,xTest_rnn_ch2_cut,xTest_rnn_ch3_cut]
 yTest = [yTest_rnn_ch0,yTest_rnn_ch1,yTest_rnn_ch2,yTest_rnn_ch3]
 
@@ -294,5 +295,12 @@ for i in range(4):
 
 history = [history_rnn_ch0,history_rnn_ch1,history_rnn_ch2,history_rnn_ch3]
 plot_accuracy_and_loss(history)
+
+# Записать xTrain, YTrain,num_labels,model_branch
+params = [num_labels,list(class_labels_rnn),model_rnn_branch,xTrain,xTest,yTrain,yTest]
+write_data = params
+datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
+pickle.dump(write_data,datafile)
+datafile.close()
 
 exit(0)

@@ -18,6 +18,7 @@ from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
 from sklearn.preprocessing import StandardScaler
+import pickle
 from main import *
 
 
@@ -32,8 +33,6 @@ df_fc_ch3,_,_,_ =  features_creation(path_ch3, sr, duration, mono, mfccs_num, ho
 
 print('size of features for FCNN :')
 print(np.shape(df_fc_ch0))
-
-
 
 # Convert features into a Panda dataframe for fully connected NN
 ch0_fc_df = pd.DataFrame(columns = columns_fc)
@@ -64,14 +63,12 @@ features_fc_ch3    = ch3_fc_df.iloc[:,0:-1]
 classes_fc_ch3     = ch3_fc_df.iloc[:,-1]
 classes_fc_ch3_str = classes_fc_ch3.astype(str)
 
-
 scaler = StandardScaler()
 
 features_fc_ch0_scaled = scaler.fit_transform(features_fc_ch0)
 features_fc_ch1_scaled = scaler.fit_transform(features_fc_ch1)
 features_fc_ch2_scaled = scaler.fit_transform(features_fc_ch2)
 features_fc_ch3_scaled = scaler.fit_transform(features_fc_ch3)
-
 
 
 #tsne = TSNE(n_components=2, random_state=42, perplexity = 11, n_jobs=-1)
@@ -107,15 +104,11 @@ xTrain_fc_ch2, xTest_fc_ch2, yTrain_fc_ch2,yTest_fc_ch2 = train_test_split(featu
 xTrain_fc_ch3, xTest_fc_ch3, yTrain_fc_ch3,yTest_fc_ch3 = train_test_split(features_fc_ch3_scaled,
                                                 y_pca_cat_ch3,test_size = 0.2, random_state = 0)
 # для передачи в Ansamble.py
-Xtr_fc = [xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3]
-Xts_fc = [xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3]
-Ytr_fc = [yTrain_fc_ch0,yTrain_fc_ch1,yTrain_fc_ch2,yTrain_fc_ch3]
-Yts_fc = [yTest_fc_ch0,yTest_fc_ch1,yTest_fc_ch2,yTest_fc_ch3]
 
 #Construct FCNN
-num_labels = np.unique(ch1_fc_df['class_label']).shape[0]
+class_labels_fc = np.unique(ch1_fc_df['class_label'])
+num_labels = class_labels_fc.shape[0]
 print(num_labels)
-
 
 # Construct model
 model_fc_branch = Sequential()
@@ -147,6 +140,7 @@ model_fc_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
                         optimizer= keras.optimizers.RMSprop(learning_rate=0.001))
 model_fc_branch.summary()
 
+print(type(model_fc_branch))
 
 checkpointer_fc_ch0 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch0.hdf5',
                                monitor='val_accuracy',
@@ -178,8 +172,6 @@ history_fc_ch2 = model_fc_branch.fit(xTrain_fc_ch2, yTrain_fc_ch2, batch_size=nu
 history_fc_ch3 = model_fc_branch.fit(xTrain_fc_ch3, yTrain_fc_ch3, batch_size=num_batch_size, epochs=num_epochs,
                         validation_data=(xTest_fc_ch3, yTest_fc_ch3), callbacks=[checkpointer_fc_ch3], verbose=1)
 
-
-
 history = [history_fc_ch0, history_fc_ch1, history_fc_ch2, history_fc_ch3]
 plot_accuracy_and_loss(history)
 
@@ -187,19 +179,25 @@ plot_accuracy_and_loss(history)
 
 xTrain = [xTrain_fc_ch0, xTrain_fc_ch1, xTrain_fc_ch2, xTrain_fc_ch3]
 yTrain = [yTrain_fc_ch0, yTrain_fc_ch1, yTrain_fc_ch2, yTrain_fc_ch3]
-
 xTest = [xTest_fc_ch0, xTest_fc_ch1, xTest_fc_ch2, xTest_fc_ch3]
 yTest = [yTest_fc_ch0, yTest_fc_ch1, yTest_fc_ch2, yTest_fc_ch3]
 
+params = [num_labels,list(class_labels_fc),model_fc_branch,xTrain,xTest,yTrain,yTest]
 
 for i in range(4):
     print(f'channel{i}')
     model_fc_branch.load_weights(path_ws + f'weights_fc_ch{i}.hdf5')
     score = model_fc_branch.evaluate(xTrain[i], yTrain[i], verbose=0)
     print("Training Accuracy: ", score[1])
-
     score = model_fc_branch.evaluate(xTest[i], yTest[i], verbose=0)
     print("Testing Accuracy: ", score[1])
+
+# Записать xTrain, YTrain,num_labels,model_branch
+write_data = params
+datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
+pickle.dump(write_data,datafile)
+datafile.close()
+#print(params.labels,params.model,params.class_labels,params.Xtr_fc,params.Xts_fc,params.Ytr_fc,params.Yts_fc)
 
 exit(0)
 
