@@ -16,18 +16,18 @@ from History_Plots import plot_accuracy_and_loss
 datafile_rf = open(path_w+'/FCNN/'+'params'+'_'+'FCNN'+'.dat',"rb")
 read_data_f= pickle.load(datafile_rf)
 num_labels = read_data_f[0]
-Xtr_fc = read_data_f[3]
-Xts_fc = read_data_f[4]
-Ytr_fc = read_data_f[5]
-Yts_fc = read_data_f[6]
+Xtr_fc = read_data_f[2]
+Xts_fc = read_data_f[3]
+Ytr_fc = read_data_f[4]
+Yts_fc = read_data_f[5]
 datafile_rf.close()
 
 datafile_rc = open(path_w+'/CNN/'+'params'+'_'+'CNN'+'.dat',"rb")
-read_data_c= pickle.load(datafile_rf)
-Xtr_cnn = read_data_c[3]
-Xts_cnn = read_data_c[4]
-Ytr_cnn = read_data_c[5]
-Yts_cnn = read_data_c[6]
+read_data_c= pickle.load(datafile_rc)
+Xtr_cnn = read_data_c[2]
+Xts_cnn = read_data_c[3]
+Ytr_cnn = read_data_c[4]
+Yts_cnn = read_data_c[5]
 datafile_rc.close()
 
 xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3 = Xtr_fc[0],Xtr_fc[1],Xtr_fc[2],Xtr_fc[3]
@@ -254,3 +254,5 @@ history_cnn_ensamble = model_cnn_ensamble.fit(
 
 history = [history_cnn_ensamble]
 plot_accuracy_and_loss(history)
+
+exit(0)

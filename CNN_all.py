@@ -255,7 +255,7 @@ history = [history_cnn_ch0,history_cnn_ch1,history_cnn_ch2,history_cnn_ch3]
 plot_accuracy_and_loss(history)
 
 # Записать xTrain, YTrain,num_labels,model_branch
-params = [num_labels,list(class_labels_cnn),model_cnn_branch,xTrain,xTest,yTrain,yTest]
+params = [num_labels,list(class_labels_cnn),xTrain,xTest,yTrain,yTest]
 write_data = params
 datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
 pickle.dump(write_data,datafile)

@@ -182,7 +182,7 @@ yTrain = [yTrain_fc_ch0, yTrain_fc_ch1, yTrain_fc_ch2, yTrain_fc_ch3]
 xTest = [xTest_fc_ch0, xTest_fc_ch1, xTest_fc_ch2, xTest_fc_ch3]
 yTest = [yTest_fc_ch0, yTest_fc_ch1, yTest_fc_ch2, yTest_fc_ch3]
 
-params = [num_labels,list(class_labels_fc),model_fc_branch,xTrain,xTest,yTrain,yTest]
+params = [num_labels,list(class_labels_fc),xTrain,xTest,yTrain,yTest]
 
 for i in range(4):
     print(f'channel{i}')
@@ -197,7 +197,6 @@ write_data = params
 datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
 pickle.dump(write_data,datafile)
 datafile.close()
-#print(params.labels,params.model,params.class_labels,params.Xtr_fc,params.Xts_fc,params.Ytr_fc,params.Yts_fc)
 
 exit(0)
 

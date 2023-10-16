@@ -297,7 +297,7 @@ history = [history_rnn_ch0,history_rnn_ch1,history_rnn_ch2,history_rnn_ch3]
 plot_accuracy_and_loss(history)
 
 # Записать xTrain, YTrain,num_labels,model_branch
-params = [num_labels,list(class_labels_rnn),model_rnn_branch,xTrain,xTest,yTrain,yTest]
+params = [num_labels,list(class_labels_rnn),xTrain,xTest,yTrain,yTest]
 write_data = params
 datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
 pickle.dump(write_data,datafile)
