@@ -27,7 +27,7 @@ elif name == 'CNN':
     num_epochs = 20
     num_batch_size = 64
 elif name == 'RNN':
-    num_epochs = 10
+    num_epochs = 20
     num_batch_size = 64
 else:
     num_epochs = 50

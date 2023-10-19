@@ -198,5 +198,10 @@ datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
 pickle.dump(write_data,datafile)
 datafile.close()
 
+write_model = model_fc_branch
+modelfile = open(path_ws + 'model' + '_'+name+'.dat',"wb")
+pickle.dump(write_model,modelfile)
+modelfile.close()
+
 exit(0)
 
