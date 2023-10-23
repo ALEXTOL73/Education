@@ -60,7 +60,6 @@ yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3 = Yts_cnn[0],Yts_cnn[1],
 # yTrain_rnn_ch0,yTrain_rnn_ch1,yTrain_rnn_ch2,yTrain_rnn_ch3 = Ytr_rnn[0],Ytr_cnn[1],Ytr_rnn[2],Ytr_rnn[3]
 # yTest_rnn_ch0,yTest_rnn_ch1,yTest_rnn_ch2,yTest_rnn_ch3 = Yts_rnn[0],Yts_rnn[1],Yts_rnn[2],Yts_rnn[3]
 
-
 def conf_matrix(model, weights, xTest, yTest):
     model.load_weights(weights)
     predictions = model.predict(xTest)
