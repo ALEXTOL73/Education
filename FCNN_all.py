@@ -182,8 +182,6 @@ yTrain = [yTrain_fc_ch0, yTrain_fc_ch1, yTrain_fc_ch2, yTrain_fc_ch3]
 xTest = [xTest_fc_ch0, xTest_fc_ch1, xTest_fc_ch2, xTest_fc_ch3]
 yTest = [yTest_fc_ch0, yTest_fc_ch1, yTest_fc_ch2, yTest_fc_ch3]
 
-params = [num_labels,list(class_labels_fc),xTrain,xTest,yTrain,yTest]
-
 for i in range(4):
     print(f'channel{i}')
     model_fc_branch.load_weights(path_ws + f'weights_fc_ch{i}.hdf5')
@@ -193,15 +191,13 @@ for i in range(4):
     print("Testing Accuracy: ", score[1])
 
 # Записать xTrain, YTrain,num_labels,model_branch
+params = [num_labels,list(class_labels_fc),xTrain,xTest,yTrain,yTest]
 write_data = params
 datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")
 pickle.dump(write_data,datafile)
 datafile.close()
 
-write_model = model_fc_branch
-modelfile = open(path_ws + 'model' + '_'+name+'.dat',"wb")
-pickle.dump(write_model,modelfile)
-modelfile.close()
+
 
 exit(0)
 
