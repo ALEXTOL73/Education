@@ -100,24 +100,23 @@ num_channels = 1
 #CNN_input = layers.Input(shape=(num_rows, num_columns, num_channels)) #для слоя 2D
 CNN_input = layers.Input(shape=(num_rows, num_columns)) #для слоя 1D
 
-x = layers.Conv1D(128, 3, activation="relu",
+x = layers.Conv1D(128, 3, activation="relu", padding='same',
                   kernel_regularizer=regularizers.l1_l2(l1=1e-5, l2=1e-5),
                   bias_regularizer=regularizers.l2(1e-5),
                   activity_regularizer=regularizers.l2(1e-5)
                   )(CNN_input)
 
-x = layers.MaxPooling1D()(x)
+x = layers.MaxPooling1D(pool_size=2)(x)
 x = layers.Dropout(0.2)(x)
 
-x = layers.Conv1D(128, 3, activation="relu",
+x = layers.Conv1D(256, 3, activation="relu",padding='same',
                   kernel_regularizer=regularizers.l1_l2(l1=1e-5, l2=1e-5),
                   bias_regularizer=regularizers.l2(1e-5),
                   activity_regularizer=regularizers.l2(1e-5)
                   )(x)
 
-x = layers.MaxPooling1D()(x)
+x = layers.MaxPooling1D(pool_size=2)(x)
 x = layers.Dropout(0.2)(x)
-
 
 x = layers.Flatten()(x)
 
