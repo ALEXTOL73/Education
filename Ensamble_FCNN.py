@@ -123,14 +123,14 @@ model_fc_ensamble = Model(inputs=[m_ch0.input, m_ch1.input, m_ch2.input, m_ch3.i
 # Compile the model
 
 model_fc_ensamble.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                          optimizer=keras.optimizers.RMSprop(learning_rate=0.001))
+                          optimizer=keras.optimizers.Adam(learning_rate=0.001))
 model_fc_ensamble.summary()
 # %%
 
 num_epochs = 200
 num_batch_size = 64
 
-checkpointer_fc_ensamble = ModelCheckpoint(filepath='d:/Project/Weights/Ansamble/weights_fc_ansamble.hdf5',
+checkpointer_fc_ensamble = ModelCheckpoint(filepath='d:/Project/Weights/AnsambleFCNN/weights_fc_ansamble.hdf5',
                                            monitor='val_accuracy',
                                            verbose=1,
                                            save_best_only=True)
@@ -157,11 +157,18 @@ xTest = [xTest_fc_ch0, xTest_fc_ch1, xTest_fc_ch2, xTest_fc_ch3]
 yTest = [yTest_fc_ch0, yTest_fc_ch1, yTest_fc_ch2, yTest_fc_ch3]
 
 print(f'channel')
-model_fc_ensamble.load_weights(path_w + '/Ansamble/' + f'weights_fc_ansamble.hdf5')
+model_fc_ensamble.load_weights(path_w + '/AnsambleFCNN/' + f'weights_fc_ansamble.hdf5')
 score = model_fc_ensamble.evaluate(xTrain, yTrain, verbose=0)
 print("Training Accuracy: ", score[1])
 score = model_fc_ensamble.evaluate(xTest, yTest, verbose=0)
 print("Testing Accuracy: ", score[1])
+
+# Записать xTrain, YTrain,num_labels
+params = [num_labels,xTrain,xTest,yTrain,yTest]
+write_data = params
+datafile=open(path_w + '/AnsambleFCNN/'+'params'+'_FCNN.dat',"wb")
+pickle.dump(write_data,datafile)
+datafile.close()
 
 exit()
 

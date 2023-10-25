@@ -98,8 +98,6 @@ num_rows = np.shape(xTest_rnn_ch0_cut[0])[0]
 num_columns = np.shape(xTest_rnn_ch0_cut[0])[1]
 
 RNN_input = tf.keras.Input(shape=(num_rows, num_columns, num_channels))
-# x = layers.Reshape((num_columns,num_rows,num_channels))(CNN_input)
-
 
 x_lstm1 = layers.Permute((2, 1, 3))(RNN_input)
 x_lstm2 = layers.Permute((2, 1, 3))(RNN_input)
@@ -155,7 +153,7 @@ RNN_output = layers.Dense(num_labels, activation='softmax')(x_lstm)
 model_rnn_branch = Model(RNN_input, RNN_output, name="LSTM")
 print(model_rnn_branch.summary())
 model_rnn_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                         optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.005))
+                         optimizer=tf.keras.optimizers.Adam(learning_rate=0.005))
 
 volume_train = np.shape(xTrain_rnn_ch0_cut)[0]
 volume_test = np.shape(xTest_rnn_ch0_cut)[0]
@@ -183,22 +181,22 @@ print(np.shape(xTest_rnn_ch0_cut))
 
 checkpointer_rnn_ch0 = ModelCheckpoint(filepath= path_ws + 'weights_rnn_ch0.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_rnn_ch1 = ModelCheckpoint(filepath= path_ws + 'weights_rnn_ch1.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_rnn_ch2 = ModelCheckpoint(filepath= path_ws + 'weights_rnn_ch2.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_rnn_ch3 = ModelCheckpoint(filepath= path_ws + 'weights_rnn_ch3.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 # print(np.shape(xTrain_rnn_ch0_cut))
@@ -296,7 +294,7 @@ for i in range(4):
 history = [history_rnn_ch0,history_rnn_ch1,history_rnn_ch2,history_rnn_ch3]
 plot_accuracy_and_loss(history)
 
-# Записать xTrain, YTrain,num_labels,model_branch
+# Записать xTrain, YTrain,num_labels
 params = [num_labels,list(class_labels_rnn),xTrain,xTest,yTrain,yTest]
 write_data = params
 datafile=open(path_ws+'params'+'_'+name+'.dat',"wb")

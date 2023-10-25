@@ -34,16 +34,16 @@ Ytr_cnn = read_data_c[4]
 Yts_cnn = read_data_c[5]
 datafile_rc.close()
 
-# datafile_rr = open(path_w+'/RNN/'+'params'+'_'+'RNN'+'.dat',"rb")
-# read_data_r= pickle.load(datafile_rr)
-# model_rnn_branch = keras.models.load_model(path_w+'/RNN/'+'weights_rnn_ch0.hdf5')
-# print(model_rnn_branch.summary())
-# class_labels_rnn = read_data_r[1]
-# Xtr_rnn = read_data_r[2]
-# Xts_rnn = read_data_r[3]
-# Ytr_rnn = read_data_r[4]
-# Yts_rnn = read_data_r[5]
-# datafile_rr.close()
+datafile_rr = open(path_w+'/RNN/'+'params'+'_'+'RNN'+'.dat',"rb")
+read_data_r= pickle.load(datafile_rr)
+model_rnn_branch = keras.models.load_model(path_w+'/RNN/'+'weights_rnn_ch0.hdf5')
+print(model_rnn_branch.summary())
+class_labels_rnn = read_data_r[1]
+Xtr_rnn = read_data_r[2]
+Xts_rnn = read_data_r[3]
+Ytr_rnn = read_data_r[4]
+Yts_rnn = read_data_r[5]
+datafile_rr.close()
 
 xTrain_fc_ch0,xTrain_fc_ch1,xTrain_fc_ch2,xTrain_fc_ch3 = Xtr_fc[0],Xtr_fc[1],Xtr_fc[2],Xtr_fc[3]
 xTest_fc_ch0,xTest_fc_ch1,xTest_fc_ch2,xTest_fc_ch3 = Xts_fc[0],Xts_fc[1],Xts_fc[2],Xts_fc[3]
@@ -55,10 +55,10 @@ xTest_cnn_ch0_cut,xTest_cnn_ch1_cut,xTest_cnn_ch2_cut,xTest_cnn_ch3_cut = Xts_cn
 yTrain_cnn_ch0,yTrain_cnn_ch1,yTrain_cnn_ch2,yTrain_cnn_ch3 = Ytr_cnn[0],Ytr_cnn[1],Ytr_cnn[2],Ytr_cnn[3]
 yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3 = Yts_cnn[0],Yts_cnn[1],Yts_cnn[2],Yts_cnn[3]
 
-# xTrain_rnn_ch0,xTrain_rnn_ch1,xTrain_rnn_ch2,xTrain_rnn_ch3 = Xtr_rnn[0],Xtr_rnn[1],Xtr_rnn[2],Xtr_rnn[3]
-# xTest_rnn_ch0,xTest_rnn_ch1,xTest_rnn_ch2,xTest_rnn_ch3 = Xts_rnn[0],Xts_rnn[1],Xts_rnn[2],Xts_rnn[3]
-# yTrain_rnn_ch0,yTrain_rnn_ch1,yTrain_rnn_ch2,yTrain_rnn_ch3 = Ytr_rnn[0],Ytr_cnn[1],Ytr_rnn[2],Ytr_rnn[3]
-# yTest_rnn_ch0,yTest_rnn_ch1,yTest_rnn_ch2,yTest_rnn_ch3 = Yts_rnn[0],Yts_rnn[1],Yts_rnn[2],Yts_rnn[3]
+xTrain_rnn_ch0,xTrain_rnn_ch1,xTrain_rnn_ch2,xTrain_rnn_ch3 = Xtr_rnn[0],Xtr_rnn[1],Xtr_rnn[2],Xtr_rnn[3]
+xTest_rnn_ch0,xTest_rnn_ch1,xTest_rnn_ch2,xTest_rnn_ch3 = Xts_rnn[0],Xts_rnn[1],Xts_rnn[2],Xts_rnn[3]
+yTrain_rnn_ch0,yTrain_rnn_ch1,yTrain_rnn_ch2,yTrain_rnn_ch3 = Ytr_rnn[0],Ytr_cnn[1],Ytr_rnn[2],Ytr_rnn[3]
+yTest_rnn_ch0,yTest_rnn_ch1,yTest_rnn_ch2,yTest_rnn_ch3 = Yts_rnn[0],Yts_rnn[1],Yts_rnn[2],Yts_rnn[3]
 
 def conf_matrix(model, weights, xTest, yTest):
     model.load_weights(weights)
@@ -82,10 +82,10 @@ df_cm.append(conf_matrix(model_cnn_branch, path_w+'/CNN/'+'weights_cnn_ch1.hdf5'
 df_cm.append(conf_matrix(model_cnn_branch, path_w+'/CNN/'+'weights_cnn_ch2.hdf5', xTest_cnn_ch2_cut, yTest_cnn_ch2))
 df_cm.append(conf_matrix(model_cnn_branch, path_w+'/CNN/'+'weights_cnn_ch3.hdf5', xTest_cnn_ch3_cut, yTest_cnn_ch3))
 
-# df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch0.hdf5', xTest_rnn_ch0, yTest_rnn_ch0))
-# df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch1.hdf5', xTest_rnn_ch1, yTest_rnn_ch1))
-# df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch2.hdf5', xTest_rnn_ch2, yTest_rnn_ch2))
-# df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch3.hdf5', xTest_rnn_ch3, yTest_rnn_ch3))
+df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch0.hdf5', xTest_rnn_ch0, yTest_rnn_ch0))
+df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch1.hdf5', xTest_rnn_ch1, yTest_rnn_ch1))
+df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch2.hdf5', xTest_rnn_ch2, yTest_rnn_ch2))
+df_cm.append(conf_matrix(model_rnn_branch, path_w+'/RNN/'+'weights_rnn_ch3.hdf5', xTest_rnn_ch3, yTest_rnn_ch3))
 
 for i in range(len(df_cm)):
     plt.figure(figsize=(10, 7))
@@ -139,7 +139,7 @@ def in_top(model, model_type, path, xTest, yTest, class_labels):
             predicted_proba_vector = model.predict(data)
             predicted_proba = predicted_proba_vector[0]
         else:
-            data = np.reshape(data, (1, np.shape(xTest)[1], np.shape(xTest)[2]))
+            data = np.reshape(data, (1, np.shape(xTest)[1]))
             # data = np.reshape(data, (1, np.shape(xTest)[1], np.shape(xTest)[2], np.shape(xTest)[3]))
             predicted_proba_vector = model.predict(data)
             predicted_proba = predicted_proba_vector[0]

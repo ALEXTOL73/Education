@@ -21,11 +21,11 @@ path_ws = path_w + '/' + name + '/'
 num_channels = int(os.environ['NUM_CHANNELS'])
 
 if name == 'FCNN':
-    num_epochs = 30
+    num_epochs = 50
     num_batch_size = 128
 elif name == 'CNN':
-    num_epochs = 20
-    num_batch_size = 64
+    num_epochs = 50
+    num_batch_size = 128
 elif name == 'RNN':
     num_epochs = 20
     num_batch_size = 64

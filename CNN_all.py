@@ -97,25 +97,27 @@ num_columns = np.shape(xTest_cnn_ch0_cut[0])[1]
 num_channels = 1
 
 
-CNN_input = layers.Input(shape=(num_rows, num_columns, num_channels))
+#CNN_input = layers.Input(shape=(num_rows, num_columns, num_channels)) #для слоя 2D
+CNN_input = layers.Input(shape=(num_rows, num_columns)) #для слоя 1D
 
-x = layers.Conv2D(32, 5, activation="relu",
+x = layers.Conv1D(128, 3, activation="relu",
                   kernel_regularizer=regularizers.l1_l2(l1=1e-5, l2=1e-5),
                   bias_regularizer=regularizers.l2(1e-5),
                   activity_regularizer=regularizers.l2(1e-5)
                   )(CNN_input)
 
-x = layers.MaxPooling2D()(x)
+x = layers.MaxPooling1D()(x)
 x = layers.Dropout(0.2)(x)
 
-x = layers.Conv2D(32, 5, activation="relu",
+x = layers.Conv1D(128, 3, activation="relu",
                   kernel_regularizer=regularizers.l1_l2(l1=1e-5, l2=1e-5),
                   bias_regularizer=regularizers.l2(1e-5),
                   activity_regularizer=regularizers.l2(1e-5)
                   )(x)
 
-x = layers.MaxPooling2D()(x)
-x = layers.Dropout(0.22)(x)
+x = layers.MaxPooling1D()(x)
+x = layers.Dropout(0.2)(x)
+
 
 x = layers.Flatten()(x)
 
@@ -128,7 +130,7 @@ CNN_output = layers.Dense(num_labels, activation='softmax')(x)
 model_cnn_branch = Model(CNN_input, CNN_output, name="CNN")
 print(model_cnn_branch.summary())
 model_cnn_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                         optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.001))
+                         optimizer=tf.keras.optimizers.Adam(learning_rate=0.001))
 
 num_rows = np.shape(xTest_cnn_ch0_cut[0])[0]
 num_columns = np.shape(xTest_cnn_ch0_cut[0])[1]
@@ -137,22 +139,22 @@ num_columns = np.shape(xTest_cnn_ch0_cut[0])[1]
 
 checkpointer_cnn_ch0 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch0.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_cnn_ch1 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch1.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_cnn_ch2 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch2.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_cnn_ch3 = ModelCheckpoint(filepath= path_ws + 'weights_cnn_ch3.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 # print(np.shape(xTrain_cnn_ch0_cut))

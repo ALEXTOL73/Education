@@ -88,7 +88,7 @@ model_cnn_ensamble = Model(inputs=[input_ch0, input_ch1, input_ch2, input_ch3], 
 # Compile the model
 
 model_cnn_ensamble.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                           optimizer=keras.optimizers.RMSprop(learning_rate=0.001))
+                           optimizer=keras.optimizers.Adam(learning_rate=0.001))
 model_cnn_ensamble.summary()
 
 # %%
@@ -96,7 +96,7 @@ model_cnn_ensamble.summary()
 num_epochs = 30
 num_batch_size = 64
 
-checkpointer_cnn_ensamble = ModelCheckpoint(filepath='d:/Project/Weights/Ansamble/weights_cnn_ansamble.hdf5',
+checkpointer_cnn_ensamble = ModelCheckpoint(filepath='d:/Project/Weights/AnsambleCNN/weights_cnn_ansamble.hdf5',
                                             monitor='val_accuracy',
                                             verbose=1,
                                             save_best_only=True)
@@ -123,10 +123,17 @@ xTest = [xTest_cnn_ch0_cut,xTest_cnn_ch1_cut,xTest_cnn_ch2_cut,xTest_cnn_ch3_cut
 yTest = [yTest_cnn_ch0,yTest_cnn_ch1,yTest_cnn_ch2,yTest_cnn_ch3]
 
 print(f'channel')
-model_cnn_ensamble.load_weights(path_w + '/Ansamble/' + f'weights_cnn_ansamble.hdf5')
+model_cnn_ensamble.load_weights(path_w + '/AnsambleCNN/' + f'weights_cnn_ansamble.hdf5')
 score = model_cnn_ensamble.evaluate(xTrain, yTrain, verbose=0)
 print("Training Accuracy: ", score[1])
 score = model_cnn_ensamble.evaluate(xTest, yTest, verbose=0)
 print("Testing Accuracy: ", score[1])
+
+# Записать xTrain, YTrain,num_labels
+params = [num_labels,xTrain,xTest,yTrain,yTest]
+write_data = params
+datafile=open(path_w + '/AnsambleCNN/'+'params'+'_CNN.dat',"wb")
+pickle.dump(write_data,datafile)
+datafile.close()
 
 exit()

@@ -137,29 +137,29 @@ model_fc_branch.add(Dense(num_labels,activation = 'softmax',
 # Compile the model
 
 model_fc_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                        optimizer= keras.optimizers.RMSprop(learning_rate=0.001))
+                        optimizer= keras.optimizers.Adam(learning_rate=0.001))
 model_fc_branch.summary()
 
 print(type(model_fc_branch))
 
 checkpointer_fc_ch0 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch0.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_fc_ch1 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch1.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_fc_ch2 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch2.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 checkpointer_fc_ch3 = ModelCheckpoint(filepath=path_ws + 'weights_fc_ch3.hdf5',
                                monitor='val_accuracy',
-                               verbose=1,
+                               verbose=2,
                                save_best_only=True)
 
 #Обучаем модель
