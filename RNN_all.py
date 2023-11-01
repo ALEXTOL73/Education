@@ -109,8 +109,10 @@ x_lstm2 = layers.Lambda(lambda x: tf.squeeze(x, 3))(x_lstm2)
 x_lstm3 = layers.Lambda(lambda x: tf.squeeze(x, 3))(x_lstm3)
 x_lstm4 = layers.Lambda(lambda x: tf.squeeze(x, 3))(x_lstm4)
 
+
+# ПОМЕНЯЛ GRU на LSTM увеличилась скорость с 430 мсек за шаг на 300 мсек и точность до 0,96 на train
 # bidirectional LSTM layers with units=128
-x_lstm1 = layers.Bidirectional(layers.LSTM(48,
+x_lstm1 = layers.Bidirectional(layers.GRU(48,
                                            return_sequences=False,
                                            dropout=0.5,
                                            recurrent_dropout=0.3,
@@ -119,7 +121,7 @@ x_lstm1 = layers.Bidirectional(layers.LSTM(48,
                                            activity_regularizer=regularizers.l2(1e-5)
                                            ))(x_lstm1)
 
-x_lstm2 = layers.Bidirectional(layers.LSTM(48,
+x_lstm2 = layers.Bidirectional(layers.GRU(48,
                                            return_sequences=False,
                                            dropout=0.5,
                                            recurrent_dropout=0.3,
@@ -128,7 +130,7 @@ x_lstm2 = layers.Bidirectional(layers.LSTM(48,
                                            activity_regularizer=regularizers.l2(1e-5)
                                            ))(x_lstm2)
 
-x_lstm3 = layers.Bidirectional(layers.LSTM(48,
+x_lstm3 = layers.Bidirectional(layers.GRU(48,
                                            return_sequences=False,
                                            dropout=0.5,
                                            recurrent_dropout=0.3,
@@ -137,7 +139,7 @@ x_lstm3 = layers.Bidirectional(layers.LSTM(48,
                                            activity_regularizer=regularizers.l2(1e-5)
                                            ))(x_lstm3)
 
-x_lstm4 = layers.Bidirectional(layers.LSTM(48,
+x_lstm4 = layers.Bidirectional(layers.GRU(48,
                                            return_sequences=False,
                                            dropout=0.5,
                                            recurrent_dropout=0.3,
