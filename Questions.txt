@@ -1,3 +1,0 @@
-1.Паттерн Factory: алгоритмы CNN, FCNN, RNN ?
-2.Паттерн Facade: class Algorytm c внутренними классами DataTransfer, WriterCSV, Learn ?
-3 Паттерн Adapter для чего нужен, где надо будет подстраиваться под различные данные или интерфейсы?
