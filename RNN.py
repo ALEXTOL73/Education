@@ -1,13 +1,15 @@
 from __future__ import division
 import warnings
+warnings.filterwarnings('ignore')
 import tensorflow as tf
 import numpy as np
 import pandas as pd
 import pickle
 import time
+
 from Preprocess import features_creation,make_np_array
 from History_Plots import plot_accuracy_and_loss
-from keras.utils import plot_model
+
 from keras import regularizers
 from keras import layers
 from keras import Model
@@ -18,10 +20,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.client import device_lib
 from main import *
 
-warnings.filterwarnings('ignore')
-
 # print(device_lib.list_local_devices())
-tf.keras.backend.clear_session()
 
 start = time.perf_counter()
 # Подготовка данных: Convert features into a Panda dataframe for RNN, Separate data into features and class labels
@@ -30,15 +29,17 @@ for i in range(num_folders):
     exec(f"df_fc_ch{i},_,df_cnn_ch{i},columns_cnn =  features_creation(path_ch{i}, \
     sr, duration, mono, mfccs_num, hop_length)")
     exec(f"ch{i}_rnn_df = pd.DataFrame(columns=columns_cnn)")
-    for j in range(np.shape(df_cnn_ch0)[0]):  # нет ошибки определение переменной в цикле выше
+    for j in range(np.shape(df_cnn_ch0)[0]):
         exec(f"ch{i}_rnn_df.loc[j] = df_cnn_ch{i}[j]")
     exec(f"features_rnn_ch{i} = ch{i}_rnn_df.iloc[:, 0:-1]")
-    for k in range(np.shape(ch0_rnn_df.mfccs)[0]):  # нет ошибки определение переменной в цикле выше
+    for k in range(np.shape(ch0_rnn_df.mfccs)[0]):
             exec(f"features_rnn_ch{i}.mfccs[k] = (features_rnn_ch{i}.mfccs[k] - \
             features_rnn_ch{i}.mfccs[k].mean())/np.abs(features_rnn_ch{i}.mfccs[k]).max()")
     exec(f"features_rnn_ch{i} = make_np_array(features_rnn_ch{i}.mfccs)")
 
+
 # Encode the classification labels
+
 le = LabelEncoder()
 
 max_filter = 128
@@ -49,44 +50,45 @@ for i in range(num_folders):
     exec(f"xTrain_rnn_ch{i}_cut = xTrain_rnn_ch{i}[:,0:max_filter,:]")
     exec(f"xTest_rnn_ch{i}_cut = xTest_rnn_ch{i}[:,0:max_filter,:]")
 
-class_labels_rnn = np.unique(ch1_rnn_df['class_label'])  # нет ошибки определение переменной в цикле выше
+
+class_labels_rnn = np.unique(ch1_rnn_df['class_label'])
 num_labels = class_labels_rnn.shape[0]
 print("Num_labels = ", num_labels)
 
-num_rows = np.shape(xTest_rnn_ch0_cut[0])[0]  # нет ошибки определение переменной в цикле выше
-num_columns = np.shape(xTest_rnn_ch0_cut[0])[1]  # нет ошибки определение переменной в цикле выше
+num_rows = np.shape(xTest_rnn_ch0_cut[0])[0]
+num_columns = np.shape(xTest_rnn_ch0_cut[0])[1]
 
 RNN_input = tf.keras.Input(shape=(num_rows, num_columns, num_channels))
 
 for i in range(1, 5):
-    exec(f"x_rnn{i} = layers.Permute((2, 1, 3))(RNN_input)")
-    exec(f"x_rnn{i} = layers.Lambda(lambda x: tf.squeeze(x, 3))(x_rnn{i})")
-    exec(f"x_rnn{i} = layers.Bidirectional(layers.GRU(128,\
+    exec(f"x_lstm{i} = layers.Permute((2, 1, 3))(RNN_input)")
+    exec(f"x_lstm{i} = layers.Lambda(lambda x: tf.squeeze(x, 3))(x_lstm{i})")
+    exec(f"x_lstm{i} = layers.Bidirectional(layers.GRU(48,\
                                            return_sequences=False,\
                                            dropout=0.4,\
                                            recurrent_dropout=0.3,\
                                            kernel_regularizer=regularizers.l1_l2(l1=1e-5, l2=1e-5),\
                                            bias_regularizer=regularizers.l2(1e-5),\
                                            activity_regularizer=regularizers.l2(1e-5)\
-                                           ))(x_rnn{i})")
+                                           ))(x_lstm{i})")
 
-x_rnn = layers.concatenate([eval(f"x_rnn{i}") for i in range(1, 5)])
 
-RNN_output = layers.Dense(num_labels, activation='softmax')(x_rnn)
+x_lstm = layers.concatenate([x_lstm1, x_lstm2, x_lstm3, x_lstm4])
+
+RNN_output = layers.Dense(num_labels, activation='softmax')(x_lstm)
 
 model_rnn_branch = Model(RNN_input, RNN_output, name="GRU")
 
 print(model_rnn_branch.summary())
-# plot_model(model_rnn_branch, to_file="d:\\model_rnn.png", show_shapes=True, show_layer_names=True)
 
 model_rnn_branch.compile(loss='categorical_crossentropy', metrics=['accuracy'],
-                         optimizer=tf.keras.optimizers.Adam(learning_rate=0.001))
+                         optimizer=tf.keras.optimizers.Adam(learning_rate=0.005))
 
-volume_train = np.shape(xTrain_rnn_ch0_cut)[0]  # нет ошибки определение переменной в цикле выше
-volume_test = np.shape(xTest_rnn_ch0_cut)[0]  # нет ошибки определение переменной в цикле выше
+volume_train = np.shape(xTrain_rnn_ch0_cut)[0]
+volume_test = np.shape(xTest_rnn_ch0_cut)[0]
 
-y = np.shape(xTrain_rnn_ch0_cut)[1]  # нет ошибки определение переменной в цикле выше
-x = np.shape(xTrain_rnn_ch0_cut)[2]  # нет ошибки определение переменной в цикле выше
+y = np.shape(xTrain_rnn_ch0_cut)[1]
+x = np.shape(xTrain_rnn_ch0_cut)[2]
 
 print(volume_train, volume_test, y, x)
 
@@ -95,6 +97,9 @@ for i in range(num_folders):
     exec(f"xTest_rnn_ch{i}_cut  = np.reshape(xTest_rnn_ch{i}_cut, (volume_test,y,x,1))")
 
 
+print(np.shape(xTrain_rnn_ch0_cut))
+print(np.shape(xTest_rnn_ch0_cut))
+
 for i in range(num_folders):
     exec(f"checkpointer_rnn_ch{i} = ModelCheckpoint(filepath= path_ws + 'weights_rnn_ch{i}.hdf5',\
                                monitor='val_accuracy',verbose=2,save_best_only=True)")
@@ -102,11 +107,13 @@ for i in range(num_folders):
 callbacks=[checkpointer_rnn_ch{i}],epochs=num_epochs,validation_data=(xTest_rnn_ch{i}_cut,yTest_rnn_ch{i}),verbose=1)")
 
 # Evaluating the model on the training and testing set
+
 xTrain = [eval(f"xTrain_rnn_ch{i}_cut") for i in range(num_folders)]
 yTrain = [eval(f"yTrain_rnn_ch{i}") for i in range(num_folders)]
 xTest = [eval(f"xTest_rnn_ch{i}_cut") for i in range(num_folders)]
 yTest = [eval(f"yTest_rnn_ch{i}") for i in range(num_folders)]
 history = [eval(f"history_rnn_ch{i}") for i in range(num_folders)]
+
 
 
 for i in range(num_folders):

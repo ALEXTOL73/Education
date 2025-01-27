@@ -1,42 +1,47 @@
 import os
 import runpy
-from dotenv.main import load_dotenv
 
-load_dotenv()
-name = os.environ['NAME']
-sr = int(os.environ['SR'])
-duration = float(os.environ['DURATION'])
+'# алгоритмы: K-Means:KM, RandomForest:RF, Support Vector Machine:SVM, XGBoost: XGB, FCNN, CNN, RNN'
+name = 'CNN'  # алгоритм
+sr = 96000  # частота дискретизации
+mfccs_num = 12  # кол-во мел-частотных кепстральных коэффициентов
+hop_length = 256  # размер кадра(БПФ)
+NFFT = 512  # кол-во отсчетов БПФ
 mono = False
-mfccs_num = int(os.environ['MFCC_NUM'])
-hop_length = int(os.environ['HOP_LENGTH'])
 
-path = os.environ['PATH_SIG']
-path_w = os.environ['PATH_WEIGHTS']
+path = './Data'
+path_w = './Weights'
 
 paths = []
 for ch in os.listdir(path):
     paths.append(path + '/' + ch + '/')
 path_ws = path_w + '/' + name + '/'
 
-num_channels = int(os.environ['NUM_CHANNELS'])
+num_channels = 1
+num_folders = len(os.listdir(path))
 
 if name == 'FCNN':
-    num_epochs = 50
-    num_batch_size = 128
+    num_epochs = 200
+    num_batch_size = 32
+    duration = 0.25  # длина фрейма
 elif name == 'CNN':
-    num_epochs = 50
-    num_batch_size = 128
-elif name == 'RNN':
-    num_epochs = 20
+    num_epochs = 200
     num_batch_size = 64
-else:
-    num_epochs = 50
+    duration = 0.25
+elif name == 'RNN':
+    num_epochs = 150
     num_batch_size = 128
+    duration = 0.25
+else:
+    num_epochs = 150
+    num_batch_size = 128
+    duration = 0.25
 
 
 def main():
+    runpy.run_module(mod_name=name)
     try:
-        runpy.run_module(mod_name=name + '_all')
+        runpy.run_module(mod_name=name)
         return 0
     except:
         return 1

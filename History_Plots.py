@@ -1,5 +1,6 @@
-#Графики обучения
+# Графики обучения
 from matplotlib import pyplot as plt
+
 
 def plot_accuracy_and_loss(history):
     # Retrieve a list of list results on training and test data
@@ -7,7 +8,6 @@ def plot_accuracy_and_loss(history):
     # -----------------------------------------------------------
     acc_ch = []
     val_acc_ch = []
-
     loss_ch = []
     val_loss_ch = []
 
@@ -25,8 +25,8 @@ def plot_accuracy_and_loss(history):
     # ------------------------------------------------
     fig = plt.figure(figsize=(12, 8))
 
-    color = ['b--', 'r--', 'g--', 'y--']
-    val_color = ['b', 'r', 'g', 'y']
+    color = ['b--', 'r--', 'g--', 'y--', 'c--', 'm--', 'k--', 'w--']
+    val_color = ['b', 'r', 'g', 'y', 'c', 'm', 'k', 'tab:orange']
 
     for i in range(len(acc_ch)):
         plt.plot(epochs, acc_ch[i], color[i], label=f'Training accuracy ch{i}')

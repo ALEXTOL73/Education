@@ -1,0 +1,219 @@
+CPU:
+
+KMeans:
+Fitting 10 folds for each of 144 candidates, totalling 1440 fits
+KMeans for ch0 is calculated
+KMeans for channel 0
+0.717
+{'algorithm': 'ball_tree', 'leaf_size': 1, 'metric': 'euclidean', 'n_neighbors': 39, 'p': 1, 'weights': 'distance'}
+Fitting 10 folds for each of 144 candidates, totalling 1440 fits
+
+KMeans for ch1 is calculated
+KMeans for channel 1
+0.762
+{'algorithm': 'ball_tree', 'leaf_size': 1, 'metric': 'euclidean', 'n_neighbors': 39, 'p': 1, 'weights': 'distance'}
+
+Время обработки =  141.645
+
+SVM:
+Fitting 10 folds for each of 80 candidates, totalling 800 fits
+SVM for channel 0
+0.881
+{'C': 100, 'gamma': 0.0001, 'kernel': 'sigmoid'}
+
+Fitting 10 folds for each of 80 candidates, totalling 800 fits
+SVM for channel 1
+0.894
+{'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+
+Время обработки =  130.919
+
+
+RandomForest:
+Fitting 10 folds for each of 8 candidates, totalling 80 fits
+RandomForest for ch0 is calculated
+RandomForest for channel 0
+0.779
+{'max_features': 'log2', 'min_samples_leaf': 1, 'min_samples_split': 4, 'n_estimators': 500}
+
+Fitting 10 folds for each of 8 candidates, totalling 80 fits
+RandomForest for ch1 is calculated
+RandomForest for channel 1
+0.804
+{'max_features': 'log2', 'min_samples_leaf': 2, 'min_samples_split': 4, 'n_estimators': 500}
+
+Время обработки =  590.036
+
+
+XGBoost:
+Fitting 10 folds for each of 10 candidates, totalling 100 fits
+xgboost for ch0 is calculated
+XGBoost for channel 0
+0.792
+{'tree_method': 'hist', 'subsample': 0.5, 'reg_alpha': 0.0, 'n_estimators': 500, 'max_depth': 1, 'learning_rate': 0.1, 'device': 'cuda', 'colsample_bytree': 0.5}
+
+Fitting 10 folds for each of 10 candidates, totalling 100 fits
+xgboost for ch1 is calculated
+XGBoost for channel 1
+0.802
+{'tree_method': 'hist', 'subsample': 0.5, 'reg_alpha': 0.0, 'n_estimators': 500, 'max_depth': 1, 'learning_rate': 0.1, 'device': 'cuda', 'colsample_bytree': 0.7}
+
+Время обработки =  1386.069
+
+
+FCNN:
+Model: "FCNN"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 512)               65536     
+                                                                 
+ dropout (Dropout)           (None, 512)               0         
+                                                                 
+ dense_1 (Dense)             (None, 512)               262656    
+                                                                 
+ dropout_1 (Dropout)         (None, 512)               0         
+                                                                 
+ dense_2 (Dense)             (None, 39)                20007     
+                                                                 
+=================================================================
+Total params: 348,199
+Trainable params: 348,199
+Non-trainable params: 0
+_________________________________________________________________
+
+channel0
+Training Accuracy:  1.0
+Testing Accuracy:  0.915
+channel1
+Training Accuracy:  1.0
+Testing Accuracy:  0.904
+
+Время обработки =  80.535
+
+
+CNN:
+Model: "CNN"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_1 (InputLayer)        [(None, 127, 23)]         0         
+                                                                 
+ conv1d (Conv1D)             (None, 127, 128)          8960      
+                                                                 
+ max_pooling1d (MaxPooling1D  (None, 63, 128)          0         
+ )                                                               
+                                                                 
+ dropout (Dropout)           (None, 63, 128)           0         
+                                                                 
+ conv1d_1 (Conv1D)           (None, 63, 256)           98560     
+                                                                 
+ max_pooling1d_1 (MaxPooling  (None, 31, 256)          0         
+ 1D)                                                             
+                                                                 
+ dropout_1 (Dropout)         (None, 31, 256)           0         
+                                                                 
+ flatten (Flatten)           (None, 7936)              0         
+                                                                 
+ dense (Dense)               (None, 512)               4063744   
+                                                                 
+ dense_1 (Dense)             (None, 39)                20007     
+                                                                 
+=================================================================
+Total params: 4,191,271
+Trainable params: 4,191,271
+Non-trainable params: 0
+_________________________________________________________________
+
+channel0
+Training Accuracy:  1.0
+Testing Accuracy:  0.941
+channel1
+Training Accuracy:  1.0
+Testing Accuracy:  0.915
+
+Время обработки =  369.113
+
+
+Model: "GRU"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 127, 23, 1)  0           []                               
+                                ]                                                                 
+                                                                                                  
+ permute (Permute)              (None, 23, 127, 1)   0           ['input_1[0][0]']                
+                                                                                                  
+ permute_1 (Permute)            (None, 23, 127, 1)   0           ['input_1[0][0]']                
+                                                                                                  
+ permute_2 (Permute)            (None, 23, 127, 1)   0           ['input_1[0][0]']                
+                                                                                                  
+ permute_3 (Permute)            (None, 23, 127, 1)   0           ['input_1[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 23, 127)      0           ['permute[0][0]']                
+                                                                                                  
+ lambda_1 (Lambda)              (None, 23, 127)      0           ['permute_1[0][0]']              
+                                                                                                  
+ lambda_2 (Lambda)              (None, 23, 127)      0           ['permute_2[0][0]']              
+                                                                                                  
+ lambda_3 (Lambda)              (None, 23, 127)      0           ['permute_3[0][0]']              
+                                                                                                  
+ bidirectional (Bidirectional)  (None, 256)          197376      ['lambda[0][0]']                 
+                                                                                                  
+ bidirectional_1 (Bidirectional  (None, 256)         197376      ['lambda_1[0][0]']               
+ )                                                                                                
+                                                                                                  
+ bidirectional_2 (Bidirectional  (None, 256)         197376      ['lambda_2[0][0]']               
+ )                                                                                                
+                                                                                                  
+ bidirectional_3 (Bidirectional  (None, 256)         197376      ['lambda_3[0][0]']               
+ )                                                                                                
+                                                                                                  
+ concatenate (Concatenate)      (None, 1024)         0           ['bidirectional[0][0]',          
+                                                                  'bidirectional_1[0][0]',        
+                                                                  'bidirectional_2[0][0]',        
+                                                                  'bidirectional_3[0][0]']        
+                                                                                                  
+ dense (Dense)                  (None, 39)           39975       ['concatenate[0][0]']            
+                                                                                                  
+==================================================================================================
+Total params: 829,479
+Trainable params: 829,479
+Non-trainable params: 0
+__________________________________________________________________________________________________
+
+channel0
+Training Accuracy:  1.0
+Testing Accuracy:  0.931
+channel1
+Training Accuracy:  1.0
+Testing Accuracy:  0.951
+
+Время обработки =  1731.24
+
+
+FCNN  TOP5
+----------------------------------------CH0----------------------------------------
+TOP1: 0.915, TOP2: 0.957, TOP3: 0.963,       TOP4: 0.963, TOP5: 0.979
+----------------------------------------CH1----------------------------------------
+TOP1: 0.904, TOP2: 0.952, TOP3: 0.963,       TOP4: 0.968, TOP5: 0.984
+
+
+CNN  TOP5
+----------------------------------------CH0----------------------------------------
+TOP1: 0.941, TOP2: 0.968, TOP3: 0.973,       TOP4: 0.984, TOP5: 0.989
+----------------------------------------CH1----------------------------------------
+TOP1: 0.915, TOP2: 0.963, TOP3: 0.968,       TOP4: 0.979, TOP5: 0.984
+
+
+RNN  TOP5
+----------------------------------------CH0----------------------------------------
+TOP1: 0.931, TOP2: 0.979, TOP3: 0.984,       TOP4: 0.989, TOP5: 0.989
+----------------------------------------CH1----------------------------------------
+TOP1: 0.951, TOP2: 0.984, TOP3: 0.994,       TOP4: 1.000, TOP5: 1.000
+
+
+BEST:
+FCNN TOP1: 0.915 
+CNN TOP1: 0.941 
+RNN TOP1: 0.951
