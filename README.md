@@ -4,7 +4,7 @@
 
 Описание файлов:
 
-  main - основная программа, позволяющая загружать алгоритмы. Алгоритмы загружаются по названию файлов: KMeans-KM.py, RandomForest-RF.py,Support Vector Machine-SVM.py,XGBoost-XGB.py,Fully Connected Neural Network-FCNN.py,Convolutional Neural Network-CNN.py,Recurrent Neural Network-RNN.py
+  main - основная программа, позволяющая загружать алгоритмы. Алгоритмы загружаются по названию файлов: KNN-KM.py, RandomForest-RF.py,Support Vector Machine-SVM.py,XGBoost-XGB.py,Fully Connected Neural Network-FCNN.py,Convolutional Neural Network-CNN.py,Recurrent Neural Network-RNN.py
   
   Preprocess.py - подпрограмма для расчета признаков, описывающих аудиосигналы
   
@@ -20,8 +20,8 @@
   
   requirements.txt - установленные библиотеки 
   
-  РЕЗУЛЬТАТЫ_CPU.txt, РЕЗУЛЬТАТЫ_GPU.txt -текстовые файлы с результатами работы всех алгоритмов с указанием оптимальных параметров и схемы архитектур
+  РЕЗУЛЬТАТЫ_CPU.txt, РЕЗУЛЬТАТЫ_GPU.txt -текстовые файлы с результатами работы всех алгоритмов с указанием оптимальных параметров и схемы архитектур на CPU, GPU
   
   Дипломная работа.docx - описание работы
   
-  Презентация.pptx - презентация работы
+  Дипломная работа.pptx - презентация работы
