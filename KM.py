@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from Preprocess import features_creation
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from MulticoreTSNE import MulticoreTSNE as TSNE
+# from MulticoreTSNE import MulticoreTSNE as TSNE
 from matplotlib import pyplot as plt
 import seaborn as sns
 import warnings
@@ -32,24 +32,25 @@ for i in range(num_folders):
     exec(f"x_pca_ch{i} = pca.fit_transform(features_fc_ch{i}_scaled)")
     exec(f"y_pca_ch{i} = ch{i}_fc_df['class_label']")
 
-tsne = TSNE(n_components=2, random_state=42, perplexity=12)
-tsne_transformed_fc_ch0 = tsne.fit_transform(features_fc_ch0_scaled)  # нет ошибки определение переменной в цикле выше
-plt.figure(figsize=(14, 12))
-sns.scatterplot(
-    x=tsne_transformed_fc_ch0[:, 0],
-    y=tsne_transformed_fc_ch0[:, 1],
-    hue=classes_fc_ch0_str,  # нет ошибки определение переменной в цикле выше
-    palette='CMRmap',
-    legend='full'
-)
-plt.savefig('d:\\TSNE_ch0.png')
+# Метод t-SNE для уменьшения размерности
+# tsne = TSNE(n_components=2, random_state=42, perplexity=12)
+# tsne_transformed_fc_ch0 = tsne.fit_transform(features_fc_ch0_scaled)  # нет ошибки определение переменной в цикле выше
+# plt.figure(figsize=(14, 12))
+# sns.scatterplot(
+#     x=tsne_transformed_fc_ch0[:, 0],
+#     y=tsne_transformed_fc_ch0[:, 1],
+#     hue=classes_fc_ch0_str,  # нет ошибки определение переменной в цикле выше
+#     palette='CMRmap',
+#     legend='full'
+# )
+# plt.savefig('d:\\TSNE_ch0.png')
 
 model_under_test_KMeans = KNeighborsClassifier()
 print(model_under_test_KMeans.get_params().keys())
 k = len(np.unique(ch0_fc_df['class_label']))  # нет ошибки определение переменной в цикле выше
 
-parameters_grid_KMeans = {
-    'n_neighbors': [k],
+parameters_grid_KNN = {
+    'n_neighbors': [20, 25, 30],
     'weights': ['uniform', 'distance'],  # взвешивание весов
     'algorithm': ['ball_tree', 'kd_tree', 'brute'],  # алгоритм
     'leaf_size': [1, 5, 10],  # размер листа
@@ -62,10 +63,10 @@ KM = KNeighborsClassifier()
 
 for i in range(num_folders):
     exec(
-       f"grid_cv_KM_ch{i} = model_selection.GridSearchCV(KM,parameters_grid_KMeans,scoring='accuracy',cv=cv,verbose=1)")
+       f"grid_cv_KM_ch{i} = model_selection.GridSearchCV(KM,parameters_grid_KNN,scoring='accuracy',cv=cv,verbose=1)")
     exec(f"grid_cv_KM_ch{i}.fit(x_pca_ch{i}, y_pca_ch{i})")
-    exec(f"print('KMeans for ch{i} is calculated')")
-    exec(f"print('KMeans for channel {i}')")
+    exec(f"print('KNN for ch{i} is calculated')")
+    exec(f"print('KNN for channel {i}')")
     exec(f"Score{i} = grid_cv_KM_ch{i}.best_score_")
     exec(f"print(round(Score{i},3))")
     exec(f"print(grid_cv_KM_ch{i}.best_params_)")

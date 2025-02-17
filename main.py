@@ -1,10 +1,10 @@
 import os
 import runpy
 
-'# алгоритмы: K-Means:KM, RandomForest:RF, Support Vector Machine:SVM, XGBoost: XGB, FCNN, CNN, RNN'
-name = 'CNN'  # алгоритм
+'# алгоритмы: K-Nearest Neighbors:KM, Random Forest:RF, Support Vector Machine:SVM, XGBoost: XGB, FCNN, CNN, RNN'
+name = 'KM'  # алгоритм
 sr = 96000  # частота дискретизации
-mfccs_num = 12  # кол-во мел-частотных кепстральных коэффициентов
+mfccs_num = 128  # кол-во мел-частотных кепстральных коэффициентов
 hop_length = 256  # размер кадра(БПФ)
 NFFT = 512  # кол-во отсчетов БПФ
 mono = False

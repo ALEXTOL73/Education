@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 start = time.perf_counter()
-pca = PCA(n_components=120)
+pca = PCA(n_components=100)
 # Подготовка данных: Convert features into a Panda dataframe, Separate data into features and class labels
 for i in range(num_folders):
     exec(f"path_ch{i} = paths[i]")
