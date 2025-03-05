@@ -84,19 +84,26 @@ le = LabelEncoder()
 df_cm = []
 
 for i in range(num_folders):
+    MOD0 = 'FCNN'
     df_cm.append(eval(f"conf_matrix(model_fc_branch, path_w + '/FCNN/' + 'weights_fc_ch{i}.hdf5', \
     xTest_fc_ch{i}, yTest_fc_ch{i})"))
+    MOD1 = 'CNN'
     df_cm.append(eval(f"conf_matrix(model_cnn_branch, path_w + '/CNN/' + 'weights_cnn_ch{i}.hdf5', \
     xTest_cnn_ch{i}_cut, yTest_cnn_ch{i})"))
+    MOD2 = 'RNN'
     df_cm.append(eval(f"conf_matrix(model_rnn_branch, path_w + '/RNN/' + 'weights_rnn_ch{i}.hdf5', \
     xTest_rnn_ch{i}_cut, yTest_rnn_ch{i})"))
 
 
-# for i in range(len(df_cm)):
-#     plt.figure(figsize=(10, 7))
-#     sns.set(font_scale=1.4)  # for label size
-#     sns.heatmap(df_cm[i], annot=True, annot_kws={"size": 16})  # font size
-
+for i in range(len(df_cm)):
+    plt.figure(figsize=(10, 7))
+    plt.xlabel('Предсказанные')
+    plt.ylabel('Реальные')
+    plt.title('Матрица ошибок ' + eval(f"MOD{i//2}") + ' ch' + str(i % 2))
+    sns.set(font_scale=1.4)  # for label size
+    sns.heatmap(df_cm[i], fmt='d', annot=True, cmap='Greens', annot_kws={"fontsize": 16},
+                display_labels=class_labels_fc)  # font size
+    plt.show()
 
 # %%
 def print_prediction(array):
