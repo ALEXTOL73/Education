@@ -24,7 +24,7 @@
 
   Dataset.png - скриншот 1 канала датасета
 
-  Conf_FCNN0, Conf_FCNN1, Conf_CNN0, Conf_CNN1, Conf_RNN0,Conf_RNN1 - матрицы ошибок для нейросетей и каналов(0-ch0, 1-ch1)
+  Conf_FCNN0.png, Conf_FCNN1.png, Conf_CNN0.png, Conf_CNN1.png, Conf_RNN0.png,Conf_RNN1.png - матрицы ошибок для нейросетей и каналов(0-ch0, 1-ch1)
 
   ТЕСТЫ.xlsx - результаты распознавания символов (клавиш клавиатуры)
   
